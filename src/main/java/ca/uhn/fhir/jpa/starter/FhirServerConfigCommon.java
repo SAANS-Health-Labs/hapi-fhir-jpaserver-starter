@@ -117,6 +117,8 @@ public class FhirServerConfigCommon {
 
     retVal.setFilterParameterEnabled(appProperties.getFilter_search_enabled());
 
+	 retVal.setResourceClientIdStrategy(DaoConfig.ClientIdStrategyEnum.ANY);
+	 retVal.setResourceServerIdStrategy(DaoConfig.IdStrategyEnum.UUID);
     return retVal;
   }
 
