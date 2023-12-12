@@ -27,7 +27,10 @@ import org.springframework.web.servlet.DispatcherServlet;
 @Import({SubscriptionSubmitterConfig.class, SubscriptionProcessorConfig.class, SubscriptionChannelConfig.class, WebsocketDispatcherConfig.class, MdmConfig.class})
 public class Application extends SpringBootServletInitializer {
 
-  public static void main(String[] args) {
+	@Autowired
+	private AutowireCapableBeanFactory beanFactory;
+
+	public static void main(String[] args) {
 
   	 /*
   	 * https://github.com/hapifhir/hapi-fhir-jpaserver-starter/issues/246
@@ -50,9 +53,6 @@ public class Application extends SpringBootServletInitializer {
     SpringApplicationBuilder builder) {
     return builder.sources(Application.class);
   }
-
-  @Autowired
-  AutowireCapableBeanFactory beanFactory;
 
   @Bean
   @Conditional(OnEitherVersion.class)
@@ -77,12 +77,19 @@ public class Application extends SpringBootServletInitializer {
       annotationConfigWebApplicationContext);
     dispatcherServlet.setContextClass(AnnotationConfigWebApplicationContext.class);
     dispatcherServlet.setContextConfigLocation(FhirTesterConfig.class.getName());
-
-    ServletRegistrationBean registrationBean = new ServletRegistrationBean();
+	 ServletRegistrationBean registrationBean = new ServletRegistrationBean();
     registrationBean.setServlet(dispatcherServlet);
     registrationBean.addUrlMappings("/*");
     registrationBean.setLoadOnStartup(1);
     return registrationBean;
-
   }
+
+	@Bean
+	public ServletRegistrationBean authServletRegistrationBean(AuthServer authServer) {
+		ServletRegistrationBean registrationBean = new ServletRegistrationBean();
+		registrationBean.setServlet(authServer);
+		registrationBean.addUrlMappings("/auth/*");
+		registrationBean.setLoadOnStartup(1);
+		return registrationBean;
+	}
 }

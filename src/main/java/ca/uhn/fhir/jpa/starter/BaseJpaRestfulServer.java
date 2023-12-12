@@ -57,9 +57,11 @@ import javax.servlet.ServletException;
 import org.hl7.fhir.r4.model.Bundle.BundleType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.cors.CorsConfiguration;
 
+@ComponentScan(basePackages = "ca.uhn.fhir.jpa.starter")
 public class BaseJpaRestfulServer extends RestfulServer {
   private static final org.slf4j.Logger ourLog = org.slf4j.LoggerFactory.getLogger(BaseJpaRestfulServer.class);
 
@@ -109,6 +111,9 @@ public class BaseJpaRestfulServer extends RestfulServer {
   @Autowired
   private IValidationSupport myValidationSupport;
 
+	@Autowired
+	private AuthInterceptor authInterceptor;
+
   public BaseJpaRestfulServer() {
   }
 
@@ -116,7 +121,7 @@ public class BaseJpaRestfulServer extends RestfulServer {
   @Override
   protected void initialize() throws ServletException {
     super.initialize();
-
+	  this.registerInterceptor(authInterceptor);
     /*
      * Create a FhirContext object that uses the version of FHIR
      * specified in the properties file.

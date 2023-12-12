@@ -132,6 +132,18 @@ public class EnvironmentHelper {
 		}
 	}
 
+	public static String getMongoDBUri(ConfigurableEnvironment environment) {
+		return environment.getProperty("spring.data.mongodb.uri");
+	}
+
+	public static String getEncryptionSecret(ConfigurableEnvironment environment) {
+		return environment.getProperty("encryption.key");
+	}
+
+	public static String getEncryptionIssuer(ConfigurableEnvironment environment) {
+		return environment.getProperty("encryption.issuer");
+	}
+
 	public static Map<String, Object> getPropertiesStartingWith(ConfigurableEnvironment aEnv,
 																					String aKeyPrefix) {
 		Map<String, Object> result = new HashMap<>();
